@@ -1,0 +1,18 @@
+install.packages('ggplot2')
+install.packages('lazyeval')
+library(lazyeval)
+library(ggplot2)
+time_reg <- read.csv ("app_B782.csv")  # get the file
+df <- data.frame(x = time_reg$weektoregister,y=time_reg$qrtr_gpa)df1 <-df #backupdataframe
+df2 <- data.frame(x = time_reg$weektoregister,y=time_reg$fail_cnt)
+df$y <- as.numeric(as.character(df$y))sum(is.na(df$y))
+#this is working on GPA as Y variable 
+ggplot(df, aes(x=x, y=y)) +  
+geom_point(shape=1) +    # Use hollow circles 
+geom_smooth(method=lm)   # Add linear regression line #  (by default includes 95% confidence region)
+linearmodel = lm(df$x~df$y, data = df)summary(linearmodel)
+df$gpa_predicted = predict(linearmodel)
+df$residual = df$x - df$gpa_predictedhead(df)
+plot(df$gpa_predicted,df$residual, pch=1,bg="red", col="red") #another plot
+abline(0,0)
+plot(df$y,resid(linearmodel)) #do a residual plot - a good model is scattered/no patternsabline(0,0)
