@@ -10,3 +10,6 @@ rm(list=ls()) #clear variable list
 attach(df2)
 plot(x,y)
 abline(lm(y~x), col="red")lines(lowness(y,x, col="blue"))
+
+#import a file from a copy from Excel. 
+ read.table(file="clipboard", sep = "\t", header = TRUE)
