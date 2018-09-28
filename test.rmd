@@ -1,0 +1,25 @@
+#Say Hello to markdown
+
+Mardown is an ***easy to use** format for wiriting reports. more here
+here's another mark *without realizing it*. These websites
+
+*[Github](www.github.com)
+*[Stackoverflow](www.stackoverflow.com)
+```r
+mtcars
+```
+
+Here's a data table
+```{r echo=FALSE}
+DT::formattable(datatable(
+  mtcars, rownames = TRUE, filter = 'top',
+              extensions = 'Buttons',
+              style = 'bootstrap',
+              options = list(
+                dom = 'Bfrtip',
+                pageLength  = 5,
+                buttons = c('copy','csv','excel'),
+                lengthMenu = c(5,10,15)
+              ))
+##formattable(mtcars,list(mpg=color_tile("white","orange")))
+       ```
