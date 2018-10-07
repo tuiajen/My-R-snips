@@ -1,0 +1,41 @@
+---
+title: "WA Growth by City"
+author: "J. Tuia"
+date: "September 29, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+### The 3 Washington State cities with the greatest estimated population increase are in King County
+####*Population Growth Estimates 2010-2017 Washington State  *
+```{r }
+#Load libraries
+library(formattable)
+library(DT)
+#Load dataset from WA OFM
+ds <- read.csv("ofm_april1_population_final.csv",header=TRUE)
+#Retrieve my columns of choice, figure the growth, and growth greater than 10%
+ds2 <- subset(ds,,select=c(3,4,5,12))
+ds2$Growth <- with(ds2,percent((X2017.Population.Estimate-X2010.Population.Census)/X2010.Population.Census))
+ds2$ten <- ds2$Growth > .10
+#Put commas in the number
+ds2$X2010.Population.Census <-formatC(ds2$X2010.Population.Census, format="d", big.mark=",")
+ds2$X2017.Population.Estimate <-formatC(ds2$X2017.Population.Estimate, format="d", big.mark=",")
+#Change the colunn names
+names(ds2) <- c("County", "City","2010 Population","2017 Est. Population",
+                "Population Growth","> 10% Growth")
+#Create a variable of the formattable choices datafame
+ds3 <- formattable(ds2,list(
+  
+            "Population Growth"=color_tile("white","orange"),
+           "> 10% Growth" = formatter("span",
+                style = x ~ style(color = ifelse(x, "green", "red")),
+                x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))))
+#Put it in a DT datable
+ds3 %>% as.datatable(options= list(order = list(list(5, 'desc'))))
+#as.datatable(ds3) #%>% formatPercentage('Population Growth', 2)
+
+```
+
