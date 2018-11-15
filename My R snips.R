@@ -13,3 +13,17 @@ abline(lm(y~x), col="red")lines(lowness(y,x, col="blue"))
 
 #import a file from a copy from Excel. 
  read.table(file="clipboard", sep = "\t", header = TRUE)
+
+#compare two lists
+x <- c('q','r','s','t')
+y <- c('r','u','v')
+
+#compare the two vectors
+#one way 
+intersect(unique(x), unique(y))
+#another way
+c <- x[(x %in% y)]
+d <- y[(y %in% x)]
+###
+all(unique(c) == unique(d)) #not sure what this means
+intersect(unique(x), unique(y))
