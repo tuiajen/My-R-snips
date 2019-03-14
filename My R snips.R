@@ -1,4 +1,9 @@
 #My R snips
+#read an EXCEL file
+install.packages("readxl")
+library(readxl)
+my_data <- read_excel("myfilename.xlsx")
+
 # Here is an example of a correlation
 corr <- read.csv ("corr_ex.csv")  # get the file (import some data to test corr)
 cor.test(corr$Normal,corr$Hypervent,method="pearson") #you can put spearman or kendall in here too
