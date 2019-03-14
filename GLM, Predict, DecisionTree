@@ -1,0 +1,54 @@
+#' Load data
+df2_all <- read.csv("myfile.csv")
+
+
+df3 <- subset(df2_all,,select=c(list,of,variables,for subset))
+df3$age <- as.numeric(df3$age) #change it to a numeric
+df3$col_1 <- ifelse(df3$col_1=="X",0,1) #re-do the variables
+df3$col_2 <- ifelse(df3$col_2=="P",0,1)
+df3$col_3 <- ifelse(df3$col_3=="Y",1,0)
+myglm <- glm(outcome_variable ~ ., data = df3,family = binomial)
+
+newdata2 <- with(df3, data.frame(column_5=c(0.00:4.00), column_2=mean(column_2), column_3=mean(column_3, na.rm=TRUE), 
+  column_4=mean(column_4))) #Range of values are listed for column 5, this is the x/predictor/cause/explanatory for the outcome
+
+preds <- predict(myglm, newdata2, type="response", se.fit=TRUE)
+predf <- preds$fit # predicted
+lower <- preds$fit - (1.96*preds$se.fit) # lower bounds
+upper <- preds$fit + (1.96*preds$se.fit) # upper bounds
+plot(0.00:4.00, predf, type="l", ylab="Predicted Probability to Return", xlab="column_5", bty="n")
+lines(0.00:4.00, lower, lty=2) # these values [0:4] are the same as column_5 in newdata2
+lines(0.00:4.00, upper, lty=2)
+# read more http://www.sthda.com/english/articles/36-classification-methods-essentials/151-logistic-regression-essentials-in-r/
+
+#below is the decision tree
+install.packages("party")
+library(party)
+#' Load data
+df2 <- read.csv("myfile.csv")
+
+#fix up columns
+#Make a new column age_gr as age group categories
+df2$age <- as.numeric(as.character(df2$age))
+agelabs <- c("A", "B", "C", "D", "E",
+             "F","G")
+df2$age_gr <- cut(df2$age,breaks = c(0, 20, 25, 30, 35,
+                                     45, 65,100), right=FALSE, labels=agelabs)
+
+#Condense multiple categories into two categories for these variables
+myxyz <- c("2","3","4") #get HU values
+df2$new_col1<- ifelse(df2$ETHN == myxyz,"UR","N_UR")
+df2$new_col2 <- ifelse(df2$col5 == "R", "Y", "N")
+df2$new_col3 <- ifelse(df2$col6 >= 2.0, "P", "F")
+
+df2$col8 <- as.factor(df2$col8)  #need to change to factor 
+
+# lapply(df, class)  -- make sure my columns are factors
+#check it out
+df2 %>% top_n(2) or head(df2)
+
+df <- subset(df2,,select=c(col1,col2, col3, col4,col5,col6,col7, col8, col9, col10))
+df_nors <- df[df$col4 == "N",] #create a subset of who I want for the tree
+output.tree <- ctree(outcome_var ~ col1 + col2 + col3 + col4 + col5 + col6 + col7, 
+                      data = df_nors)
+plot(output.tree)#, type="simple")
