@@ -1,0 +1,49 @@
+
+library(dplyr)
+input_df <- read.csv("ig.csv")
+
+entropy <- function(target) {
+  freq <- table(target)/length(target)
+  # vectorize
+  vec <- as.data.frame(freq)[,2]
+  #drop 0 to avoid NaN resulting from log2
+  vec<-vec[vec>0]
+  #compute entropy
+  -sum(vec * log2(vec))
+}
+
+#entropy(input_df$rtn) #Uncomment to view overall entropy of dataset
+
+#Funcation to get the IG from a variable in the dataset
+IG_cat<-function(data,feature,target){
+  #Strip out rows where feature is NA
+  data<-data[!is.na(data[,feature]),] 
+  #use dplyr to compute e and p for each value of the feature
+  dd_data <- data %>% group_by_at(feature) %>% summarise(e=entropy(get(target)), 
+                                                         n=length(get(target))
+  )
+  
+  #compute entropy for the parent
+  e0<-entropy(data[,target])
+  #calculate p for each value of feature
+  dd_data$p<-dd_data$n/nrow(data)
+  #compute IG
+  IG<-e0-sum(dd_data$p*dd_data$e)
+  
+  return(IG)
+}
+#This is how to call the funciton for one variable
+#IG_cat(input_df, "fam_stat", "rtn")
+
+
+#GET ALL THE COLUMNS IN THE DATASET AT ONCE
+col_name<-character()
+ig<-numeric()
+features<-names(input_df)
+for (i in 1:5){
+  col_name[i]<-names(input_df)[i]
+  ig[i]<-IG_cat(input_df, names(input_df)[i], "rtn")
+}
+ig_df<-cbind(col_name, round(ig,6))
+
+ig_df
