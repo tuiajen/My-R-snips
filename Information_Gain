@@ -40,7 +40,7 @@ IG_cat<-function(data,feature,target){
 col_name<-character()
 ig<-numeric()
 features<-names(input_df)
-for (i in 1:5){
+for (i in 1:5){     #edit the number of columns /features here
   col_name[i]<-names(input_df)[i]
   ig[i]<-IG_cat(input_df, names(input_df)[i], "rtn")
 }
