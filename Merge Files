@@ -1,0 +1,49 @@
+install.packages("readxl")
+install.packages("xlsx")
+library("readxl")
+library("xlsx") #this doesn't work
+library(tidyverse)
+
+surv <- read_excel("ImportSurvDatatoR.xlsx")
+colnames(surv)[colnames(surv)=="Username"] <- "SID"
+#colnames(surv)[colnames(surv)=="Question 7"] <- "Question_7"
+demo <- read_excel("Survey_CCS_DEMOG.xlsx")
+
+FullDS <- merge(surv, demo, by=c("SID","YRQ"))
+
+#Do these 2 numbers match?
+nrow(FullDS)
+nrow(surv)
+
+#More values in Survey and missing Demographic
+#which rows in surv are missing in FullDS
+x <- surv[,"SID", drop=FALSE]
+y <- FullDS[,"SID", drop=FALSE]
+
+x[!(x %in% y)]
+
+
+#find duplicates
+z<- FullDS$SID
+z[duplicated(z)]
+
+write.csv(FullDS, "R_FullDS.csv") #Uncomment when needed
+
+nrow(FullDS[FullDS$Quesion_7 == "1",])
+
+df_pipes <- #FullDS
+    surv%>% 
+  filter(Question_7=="1")
+nrow(df_pipes)
+
+x <- surv[,"SID", drop=FALSE]
+y <- FullDS[,"SID", drop=FALSE]
+
+nrow(x)
+nrow(y)
+
+c <- x[(x %in% y)]
+d <- y[(y %in% x)]
+# 
+write.csv(x, "x_surv.csv")
+write.csv(y, "y_fullds.csv") 
