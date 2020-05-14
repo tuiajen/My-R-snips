@@ -21,6 +21,13 @@ exportme
 capture.output(exportme,file="li_tukey.doc")
 plot(exportme)
 
+#this is if there are two categorical variables
+# 2-Way Anova
+res.aov2 <- aov(GPA ~ CREDIT_LVL + SPEC_POPULATION, data = df_lvl)
+summary(res.aov2)
+
+TukeyHSD(res.aov2, which = "CREDIT_LVL")
+
 ##This is another installment for ANOVA to work survey data
 survey <- read.csv ("Results_DatafromSurvey.csv")  
 survey$Cat <- as.factor(survey$Cat)
